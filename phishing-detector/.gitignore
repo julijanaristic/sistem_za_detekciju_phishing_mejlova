@@ -27,8 +27,8 @@ pip-wheel-metadata/
 credentials.json
 client_secret*.json
 
-/phishing_detector/backend/ml/saved_models/
-/phishing_detector/backend/ml/data/raw
+/backend/ml/saved_models/
+/backend/ml/data/
 
 logs/
 *.log

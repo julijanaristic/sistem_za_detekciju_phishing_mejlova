@@ -1,0 +1,35 @@
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+pydantic==2.9.2
+pydantic-settings==2.5.2
+python-multipart==0.0.9
+
+# NLP / ML
+scikit-learn==1.5.2
+pandas==2.2.3
+numpy==1.26.4
+scipy==1.13.1
+joblib==1.4.2
+
+# Text / URL parsin
+beautifulsoup4==4.12.3
+lxml==5.3.0
+tldextract==5.1.2
+rapidfuzz==3.9.7
+
+# when moving to transformer fine-tuning:
+torch==2.4.1
+transformers==4.44.2
+datasets==3.0.0
+
+# explainability - highlighting suspicious words in the UI 
+shap==0.46.0
+
+# Dev
+pytest==8.3.3
+httpx==0.27.2
+
+# gmail connection
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib
