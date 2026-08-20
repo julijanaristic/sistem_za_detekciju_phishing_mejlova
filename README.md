@@ -147,21 +147,21 @@ The datasets used in this project are publicly available phishing/legitimate
 email corpora. Download the following CSV files and place them in
 `backend/ml/data/raw/`:
 
-- `CEAS_08.csv`
-- `Enron.csv`
-- `Ling.csv`
-- `Nazario.csv`
-- `Nigerian_Fraud.csv`
-- `SpamAssassin.csv`
+- CEAS_08.csv
+- Enron.csv
+- Ling.csv
+- Nazario.csv
+- Nigerian_Fraud.csv
+- SpamAssassin.csv
 
-Each file is expected to contain either a `text` column, or separate
-`subject` and `body` columns (in which case `prepare_dataset.py` will
-combine them into `text`), plus a `label` column (`1` = phishing,
-`0` = legitimate).
+Each file is expected to contain either a text column, or separate
+subject and body columns (in which case prepare_dataset.py will
+combine them into text), plus a label column (1 = phishing,
+0 = legitimate).
 
 ### Running dataset preparation
 
-Place the required CSV datasets in `backend/ml/data/raw`, then run:
+Place the required CSV datasets in backend/ml/data/raw, then run:
 ```
 cd backend
 python ml/prepare_dataset.py
@@ -174,8 +174,8 @@ The script:
 - removes duplicate emails,
 - preserves information about the source dataset for diagnostics.
 
-This produces `phishing_dataset_with_source.csv` (and a plain
-`phishing_dataset.csv` fallback without the `source_file` column), which
+This produces phishing_dataset_with_source.csv (and a plain
+phishing_dataset.csv fallback without the source_file column), which
 are used by all training and evaluation scripts.
 
 ## 2. Training the TF-IDF + Logistic Regression Baseline
@@ -258,7 +258,7 @@ This enables training on the complete train and test splits.
 
 If local CPU training is too slow (fine-tuning DistilBERT on the full
 ~66k-row train set can take hours per epoch on CPU), the recommended
-approach is to run `ml/train_bert.py` on a free Colab GPU runtime instead.
+approach is to run ml/train_bert.py on a free Colab GPU runtime instead.
 On a T4 GPU, the full 2-epoch run takes roughly 1.5–2 hours; on CPU, budget
 several hours per epoch.
 
@@ -266,34 +266,34 @@ several hours per epoch.
 
 1. **Open Colab and enable a GPU runtime.**
    Go to [colab.research.google.com](https://colab.research.google.com) →
-   New notebook → `Runtime` → `Change runtime type` → set Hardware
+   New notebook → Runtime → Change runtime type → set Hardware
    accelerator to **GPU** (T4 is sufficient and free).
 
 2. **Package and upload the project.**
-   Zip the `backend/ml/` folder (scripts + `data/raw/` with all six CSV
+   Zip the backend/ml/ folder (scripts + data/raw/ with all six CSV
    files) locally, then upload the zip via the Colab file panel, or upload
    it to Google Drive and mount the Drive instead (more reliable for larger
    files).
 
 3. **Unzip, always from a known working directory.**
-   ```python
+   ```
    %cd /content
    !rm -rf /content/ml
    !unzip -q ml.zip -d /content/
    ```
-   Always `%cd /content` before any `rm -rf` — if your shell's current
-   directory has been changed by an earlier `%cd ml` and you then delete
-   that same directory, `getcwd()` breaks and every subsequent `!` command
-   fails with a `cannot access parent directories` error.
+   Always %cd /content before any rm -rf — if your shell's current
+   directory has been changed by an earlier %cd ml and you then delete
+   that same directory, getcwd() breaks and every subsequent ! command
+   fails with a cannot access parent directories error.
 
 4. **Verify the upload.**
-   ```python
+   ```
    !ls /content/ml/data/raw
    ```
    Confirm all 6 source files are present.
 
 5. **Install dependencies.**
-   ```python
+   ```
    !pip install -q transformers torch scikit-learn accelerate
    ```
    Colab's PyTorch already ships with CUDA support, so no extra GPU setup
@@ -301,52 +301,52 @@ several hours per epoch.
 
 6. **Confirm the GPU is actually visible** (optional but recommended,
    catches a misconfigured runtime before wasting time on a full run):
-   ```python
+   ```
    import torch
    print(torch.cuda.is_available(), torch.cuda.get_device_name(0))
    ```
 
-7. **Check `train_bert.py` settings.**
-   Make sure `MAX_TRAIN_SAMPLES` and `MAX_TEST_SAMPLES` are set to `None`
-   (not the smoke-test values `5000`/`1500`) before running the full,
+7. **Check train_bert.py settings.**
+   Make sure MAX_TRAIN_SAMPLES and MAX_TEST_SAMPLES are set to None
+   (not the smoke-test values 5000/1500) before running the full,
    thesis-grade training run.
 
 8. **Run training.**
-   ```python
+   ```
    %cd /content/ml
    !python train_bert.py
    ```
 
 9. **Retrieve the trained model.**
    Colab sessions are ephemeral — local files (including
-   `saved_models/bert/final/`) are deleted when the runtime disconnects or
+   saved_models/bert/final/) are deleted when the runtime disconnects or
    resets. As soon as training finishes:
 
-   - **Do not zip the whole `saved_models/bert/` folder.** It also
-     contains `checkpoints/`, which includes the optimizer state
-     (`optimizer.pt`) — typically 2x the size of the model itself and not
-     needed for inference or for the thesis. Zip only the `final/`
+   - **Do not zip the whole saved_models/bert/ folder.** It also
+     contains checkpoints/, which includes the optimizer state
+     (optimizer.pt) — typically 2x the size of the model itself and not
+     needed for inference or for the thesis. Zip only the final/
      directory:
-     ```python
+     ```
      %cd /content
      !zip -r results.zip ml/saved_models/bert/final
      ```
-   - Download `results.zip` via the Colab file panel, **or**, more
+   - Download results.zip via the Colab file panel, **or**, more
      reliably for larger files, copy it to Google Drive:
-     ```python
+     ```
      from google.colab import drive
      drive.mount('/content/drive')
      !cp results.zip /content/drive/MyDrive/
      ```
 
 10. **Copy the result back into the project.**
-    Unzip `results.zip` locally so that the trained model ends up at
-    `backend/ml/saved_models/bert/final/`.
+    Unzip results.zip locally so that the trained model ends up at
+    backend/ml/saved_models/bert/final/.
 
 The BERT training script does not require any code changes to use a GPU —
 PyTorch automatically selects CUDA when available, via:
 
-```python
+```
 torch.device("cuda" if torch.cuda.is_available() else "cpu")
 ```
 # Gmail Integration
